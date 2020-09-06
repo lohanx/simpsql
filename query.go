@@ -114,6 +114,8 @@ func ptrval(val interface{}) interface{} {
 		return *val.(*uint8)
 	case *int:
 		return *val.(*int)
+	case *int64:
+		return *val.(*int64)
 	case *string:
 		return *val.(*string)
 	case *float32:
