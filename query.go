@@ -78,7 +78,10 @@ func (q *Query) parseColumnTypes() ([]string, []interface{}, error) {
 		case "BOOLEAN", "BOOL":
 			var v bool
 			dest[i] = &v
-		case "BIT", "INT", "BIGINT", "TINYINT", "SMALLINT", "MEDIUMINT":
+		case "BIT":
+			var v uint8
+			dest[i] = &v
+		case "TINYINT", "SMALLINT", "MEDIUMINT", "INT":
 			var v int
 			dest[i] = &v
 		case "FLOAT", "REAL":
@@ -92,7 +95,7 @@ func (q *Query) parseColumnTypes() ([]string, []interface{}, error) {
 			"JSON", "SET", "DATE", "DATETIME", "YEAR", "TIME":
 			var v string
 			dest[i] = &v
-		case "TIMESTAMP":
+		case "BIGINT", "TIMESTAMP":
 			var v int64
 			dest[i] = &v
 		case "BINARY", "TINYBLOB", "BLOB", "MEDIUMBLOB", "LONGBLOB":
@@ -105,21 +108,23 @@ func (q *Query) parseColumnTypes() ([]string, []interface{}, error) {
 	return columns, dest, nil
 }
 
-func ptrval(arg interface{}) interface{} {
-	switch arg.(type) {
+func ptrval(val interface{}) interface{} {
+	switch val.(type) {
+	case *uint8:
+		return *val.(*uint8)
 	case *int:
-		return *arg.(*int)
+		return *val.(*int)
 	case *string:
-		return *arg.(*string)
+		return *val.(*string)
 	case *float32:
-		return *arg.(*float32)
+		return *val.(*float32)
 	case *float64:
-		return *arg.(*float64)
+		return *val.(*float64)
 	case *bool:
-		return *arg.(*bool)
+		return *val.(*bool)
 	case *[]byte:
-		return *arg.(*[]byte)
+		return *val.(*[]byte)
 	default:
-		return *arg.(*[]byte)
+		return *val.(*[]byte)
 	}
 }
